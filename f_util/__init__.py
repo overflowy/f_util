@@ -1,5 +1,28 @@
 import functools
+import logging
+import sys
 import time
+
+
+def setup_logging(log_path, level=logging.DEBUG, except_hook=False):
+    stdout_handler = logging.StreamHandler(sys.stdout)
+    stdout_handler.setLevel(logging.DEBUG)
+
+    logging.basicConfig(
+        level=logging.DEBUG,
+        format="%(asctime)s::%(levelname)s::%(module)s::%(funcName)s::%(message)s",
+        handlers=[logging.FileHandler(log_path, mode="a"), stdout_handler],
+    )
+
+    def handle_exception(exc_type, exc_value, exc_traceback):
+        logger = logging.getLogger(__name__)
+        if issubclass(exc_type, KeyboardInterrupt):
+            sys.__excepthook__(exc_type, exc_value, exc_traceback)
+            return
+        logger.critical("Uncaught exception", exc_info=(exc_type, exc_value, exc_traceback))
+
+    if except_hook:
+        sys.excepthook = handle_exception
 
 
 def timer(func):
