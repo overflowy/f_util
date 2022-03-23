@@ -2,6 +2,13 @@ import functools
 import logging
 import sys
 import time
+from configparser import ConfigParser
+
+
+def get_config(config_path):
+    config = ConfigParser(allow_no_value=True)
+    config.read(config_path)
+    return config
 
 
 def setup_logging(log_path, level=logging.DEBUG, except_hook=False):
@@ -29,7 +36,7 @@ def timer(func):
     """Used for measuring the execution time."""
 
     @functools.wraps(func)
-    def wrapper_timer(*args, **kwargs):
+    def wrapped(*args, **kwargs):
         tic = time.perf_counter()
         value = func(*args, **kwargs)
         toc = time.perf_counter()
@@ -37,7 +44,7 @@ def timer(func):
         print(f"{func.__class__}.{func.__name__}: {elapsed_time:0.5f} seconds")
         return value
 
-    return wrapper_timer
+    return wrapped
 
 
 def replace_multiple(s, *args):
