@@ -3,6 +3,8 @@ import logging
 import sys
 import time
 from configparser import ConfigParser
+from pathlib import Path
+from shutil import rmtree
 
 
 def get_config(config_path):
@@ -45,6 +47,31 @@ def timer(func):
         return value
 
     return wrapped
+
+
+def remove_path(path):
+    logger = logging.getLogger(__name__)
+    path = Path(path)
+    if path.is_file() or path.is_symlink():
+        path.unlink()
+        logger.info(f"Removed {path.absolute}")
+    elif path.is_dir():
+        rmtree(path)
+        logger.info(f"Removed {path.absolute}")
+    else:
+        raise RuntimeError("Could not remove path.")
+
+
+def remove_older_than(path, days=3):
+    logger = logging.getLogger(__name__)
+    path = Path(path)
+    if not path.is_dir():
+        raise TypeError("Path must directory.")
+    to_compare = time.time() - days * 86400
+    for item in path.iterdir():
+        if item.stat().st_mtime < to_compare:
+            remove_path(item)
+            logger.info(f"Removed {item}")
 
 
 def replace_multiple(s, *args):
