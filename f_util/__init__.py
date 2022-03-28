@@ -13,14 +13,14 @@ def get_config(config_path):
     return config
 
 
-def setup_logging(log_path, level=logging.DEBUG, except_hook=False):
+def setup_logging(log_path, level=logging.DEBUG, except_hook=False, mode="a"):
     stdout_handler = logging.StreamHandler(sys.stdout)
     stdout_handler.setLevel(logging.DEBUG)
 
     logging.basicConfig(
         level=logging.DEBUG,
         format="%(asctime)s::%(levelname)s::%(module)s::%(funcName)s::%(message)s",
-        handlers=[logging.FileHandler(log_path, mode="a"), stdout_handler],
+        handlers=[logging.FileHandler(log_path, mode=mode), stdout_handler],
     )
 
     def handle_exception(exc_type, exc_value, exc_traceback):
