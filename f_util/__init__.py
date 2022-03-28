@@ -88,3 +88,15 @@ def replace_multiple(s, *args):
             case _:
                 raise TypeError(repr(arg))
     return s
+
+
+def sort_and_prioritize(lst, to_prioritize):
+    """Usage:
+    >>> sort_and_prioritize(["B", "C", "D", "A", "F", "E"], ["C", "D"])
+    >>> ['C', 'D', 'A', 'B', 'E', 'F']
+    """
+    queue = [lst.pop(lst.index(item)) for item in to_prioritize]
+    lst = sorted(lst)
+    for item in sorted(queue, reverse=True):
+        lst.insert(0, item)
+    return lst
