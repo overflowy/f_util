@@ -100,3 +100,19 @@ def sort_and_prioritize(lst, to_prioritize):
     for item in sorted(queue, reverse=True):
         lst.insert(0, item)
     return lst
+
+
+def flip_dict(d):
+    flipped = {}
+
+    for k, v in d.items():
+        if v not in flipped:
+            flipped[v] = [k]
+        else:
+            flipped[v].append(k)
+
+    return flipped
+
+
+def get_duplicate_values_from_dict(d):
+    return {k: v for k, v in flip_dict(d).items() if len(v) > 1}
