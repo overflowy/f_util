@@ -93,6 +93,19 @@ def replace_multiple(s, *args):
     return s
 
 
+def replace_in_file(path, *args):
+    with open(path, "r") as f:
+        text = f.read()
+    for arg in args:
+        match arg:
+            case [str(), str()] | [str(), str(), int()]:
+                text = text.replace(*arg)
+            case _:
+                raise TypeError(repr(arg))
+    with open(path, "w") as f:
+        f.write(text)
+
+
 def sort_and_prioritize(lst, to_prioritize):
     """Usage:
     >>> sort_and_prioritize(["B", "C", "D", "A", "F", "E"], ["C", "D"])
